@@ -40,6 +40,10 @@ python main.py -m mix -g 1
 ```
 
 When you use the multiple GPUs, please specify the number of gpus by `-g` option (default:1)
+#### Dataset
+
+The dataset used in [RL-Restore](https://arxiv.org/abs/1804.03312) is available [here](https://github.com/yuke93/RL-Restore).
+To generate the training dataset, please run `data/train/generate_train.m` in the above repository and put the generated file (train.h5) to `dataset/train/` in your computer.
 
 ### Train a model on your own dataset
 
@@ -55,9 +59,3 @@ Put the trained model (XXXX.pth) to `Trained_model/`, and run the following code
 ```shell
 python test.py -m mix -g 1
 ```
-
-
-### Dataset
-
-The dataset used in [RL-Restore](https://arxiv.org/abs/1804.03312) is available [here](https://github.com/yuke93/RL-Restore).
-To generate the training dataset, please run `data/train/generate_train.m` in the above repository and put the generated file (train.h5) to `dataset/train/` in your computer.
