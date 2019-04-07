@@ -43,7 +43,7 @@ When you use the multiple GPUs, please specify the number of gpus by `-g` option
 #### Dataset
 
 The dataset used in [RL-Restore](https://arxiv.org/abs/1804.03312) is available [here](https://github.com/yuke93/RL-Restore).
-To generate the training dataset, please run `data/train/generate_train.m` in the above repository and put the generated file (train.h5) to `dataset/train/` in your computer.
+To generate the training dataset, please run `data/train/generate_train.m` in the [repository](https://github.com/yuke93/RL-Restore) and put the generated file (train.h5) to `dataset/train/` in your computer.
 
 ### Train a model on your own dataset
 
