@@ -9,7 +9,7 @@ If you find this work useful in your research, please cite:
     @inproceedings{suganumaCVPR2019,
         Author = {M. Suganuma and X. Liu and T. Okatani},
         Title = {Attention-based Adaptive Selection of Operations for Image Restoration in the Presence of Unknown Combined Distortions},
-        Booktitle = {CVPR},
+        Booktitle = {The IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
         Year = {2019}
     }
 
