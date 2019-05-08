@@ -48,6 +48,7 @@ class CNN_train():
                 self.test_dataloader = DataLoader(dataset=test_set, num_workers=self.num_work, batch_size=1, shuffle=False, pin_memory=False)
             elif dataset_name == 'yourdata':
                 self.num_work = 8
+                # Specify the path of your data
                 train_input_dir = '/dataset/yourdata_train/input/'
                 train_target_dir = '/dataset/yourdata_train/target/'
                 test_input_dir = '/dataset/yourdata_test/input/'
@@ -64,7 +65,7 @@ class CNN_train():
         print('GPUID    :', gpuID)
         print('epoch_num:', epoch_num)
         
-        # model
+        # define model
         torch.manual_seed(2018)
         torch.cuda.manual_seed(2018)
         torch.backends.cudnn.benchmark = True
@@ -81,7 +82,7 @@ class CNN_train():
         optimizer = optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999))
         scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epoch_num)
         test_interval = 5
-        # for results
+        # for output images
         if not os.path.exists('./results'):
             os.makedirs('./results/Inputs')
             os.makedirs('./results/Outputs')
@@ -111,17 +112,16 @@ class CNN_train():
             print('Train set : Average loss: {:.4f}'.format(train_loss))
             print('time ', time.time()-start_time)
             
-            # check test performance
+            # check val/test performance
             if epoch % test_interval == 0:
                 with torch.no_grad():
                     print('------------------------')
                     for module in model.children():
                         module.train(False)
-                    test_ite = 0
                     test_psnr = 0
                     test_ssim = 0
                     eps = 1e-10
-                    for i, (input, target) in enumerate(self.test_dataloader):
+                    for test_ite, (input, target) in enumerate(self.test_dataloader):
                         lr_patch = Variable(input, requires_grad=False).cuda(gpuID)
                         hr_patch = Variable(target, requires_grad=False).cuda(gpuID)
                         output = model(lr_patch)
@@ -129,7 +129,7 @@ class CNN_train():
                         vutils.save_image(output.data, './results/Outputs/%05d.png' % (int(i)), padding=0, normalize=False)
                         vutils.save_image(lr_patch.data, './results/Inputs/%05d.png' % (int(i)), padding=0, normalize=False)
                         vutils.save_image(hr_patch.data, './results/Targets/%05d.png' % (int(i)), padding=0, normalize=False)
-                        # SSIM and PSNR
+                        # Calculation of SSIM and PSNR values
                         output = output.data.cpu().numpy()[0]
                         output[output>1] = 1
                         output[output<0] = 0
@@ -144,7 +144,6 @@ class CNN_train():
                         imdf = (output - hr_patch) ** 2
                         mse = np.mean(imdf) + eps
                         test_psnr+= 10 * math.log10(1.0/mse)
-                        test_ite += 1
                     test_psnr /= (test_ite)
                     test_ssim /= (test_ite)
                     print('Test PSNR: {:.4f}'.format(test_psnr))
