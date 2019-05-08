@@ -121,7 +121,8 @@ class CNN_train():
                     test_psnr = 0
                     test_ssim = 0
                     eps = 1e-10
-                    for test_ite, (input, target) in enumerate(self.test_dataloader):
+                    test_ite = 0
+                    for _, (input, target) in enumerate(self.test_dataloader):
                         lr_patch = Variable(input, requires_grad=False).cuda(gpuID)
                         hr_patch = Variable(target, requires_grad=False).cuda(gpuID)
                         output = model(lr_patch)
@@ -144,6 +145,7 @@ class CNN_train():
                         imdf = (output - hr_patch) ** 2
                         mse = np.mean(imdf) + eps
                         test_psnr+= 10 * math.log10(1.0/mse)
+                        test_ite += 1
                     test_psnr /= (test_ite)
                     test_ssim /= (test_ite)
                     print('Test PSNR: {:.4f}'.format(test_psnr))
