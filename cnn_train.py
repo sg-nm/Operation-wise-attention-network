@@ -41,11 +41,11 @@ class CNN_train():
                 val_dir = '/dataset/val/'
                 test_dir = '/dataset/test/'
                 train_set = get_dataset_deform(train_dir, val_dir, test_dir, 0)
-                # val_set = get_dataset_deform(train_dir, val_dir, test_dir, 1)
-                test_set = get_dataset_deform(train_dir, val_dir, test_dir, 2)
+                val_set = get_dataset_deform(train_dir, val_dir, test_dir, 1)
+                # test_set = get_dataset_deform(train_dir, val_dir, test_dir, 2)
                 self.dataloader = DataLoader(dataset=train_set, num_workers=self.num_work, batch_size=self.batchsize, shuffle=True, pin_memory=True)
-                # self.val_loader = DataLoader(dataset=val_set, num_workers=self.num_work, batch_size=1, shuffle=False, pin_memory=False)
-                self.test_dataloader = DataLoader(dataset=test_set, num_workers=self.num_work, batch_size=1, shuffle=False, pin_memory=False)
+                self.val_loader = DataLoader(dataset=val_set, num_workers=self.num_work, batch_size=1, shuffle=False, pin_memory=False)
+                # self.test_dataloader = DataLoader(dataset=test_set, num_workers=self.num_work, batch_size=1, shuffle=False, pin_memory=False)
             elif dataset_name == 'yourdata':
                 self.num_work = 8
                 # Specify the path of your data
@@ -122,7 +122,7 @@ class CNN_train():
                     test_ssim = 0
                     eps = 1e-10
                     test_ite = 0
-                    for _, (input, target) in enumerate(self.test_dataloader):
+                    for _, (input, target) in enumerate(self.val_loader):
                         lr_patch = Variable(input, requires_grad=False).cuda(gpuID)
                         hr_patch = Variable(target, requires_grad=False).cuda(gpuID)
                         output = model(lr_patch)
@@ -148,8 +148,8 @@ class CNN_train():
                         test_ite += 1
                     test_psnr /= (test_ite)
                     test_ssim /= (test_ite)
-                    print('Test PSNR: {:.4f}'.format(test_psnr))
-                    print('Test SSIM: {:.4f}'.format(test_ssim))
+                    print('Valid PSNR: {:.4f}'.format(test_psnr))
+                    print('Valid SSIM: {:.4f}'.format(test_ssim))
                     f = open('PSNR.txt', 'a')
                     writer = csv.writer(f, lineterminator='\n')
                     writer.writerow([epoch, test_psnr, test_ssim])
